@@ -1,0 +1,7 @@
+[package]
+name = "hirust"
+version = "0.1.0"
+authors = ["RONTheCookie <me@ronthecookie.me>"]
+edition = "2018"
+
+[dependencies]
