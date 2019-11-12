@@ -1,0 +1,2 @@
+#!/bin/sh
+wget -O .gitignore https://raw.githubusercontent.com/github/gitignore/master/$1.gitignore
