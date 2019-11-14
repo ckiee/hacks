@@ -1,0 +1,1 @@
+It works for simple programs but once I try to run anything big (e.g. mandelbrot.b) it just runs out of memory and I can't be bothered to debug it.
