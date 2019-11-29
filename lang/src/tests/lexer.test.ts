@@ -1,5 +1,5 @@
 import Lexer, { regexps } from "../lexer";
-const testedTypes = ["comment", "keyword", "whitespace", "identifier"];
+const testedTypes = ["comment", "keyword", "identifier", "seperator", "whitespace"];
 
 test("it lexes comment", () => {
     const tokens = new Lexer("//hello").lex();
@@ -14,10 +14,13 @@ test("it lexes keywords", () => {
     expect(tokens).toEqual([{ match: "const", type: "keyword" }]);
 });
 
-test("it lexes whitespace", () => {
-    const tokens = new Lexer("            \n\n    ").lex();
+test("it lexes seperator", () => {
+    const tokens = new Lexer("(){}").lex();
     expect(tokens).toEqual([
-        { match: "            \n\n    ", type: "whitespace" }
+        { match: "(", type: "seperator" },
+        { match: ")", type: "seperator" },
+        { match: "{", type: "seperator" },
+        { match: "}", type: "seperator" }
     ]);
 });
 
@@ -25,6 +28,19 @@ test("it lexes identifier", () => {
     const tokens = new Lexer("world").lex();
     expect(tokens).toEqual([{ match: "world", type: "identifier" }]);
 });
+
+test("it lexes whitespace", () => {
+    const tokens = new Lexer("            \n\n    ").lex();
+    expect(tokens).toEqual([
+        { match: "            \n\n    ", type: "whitespace" }
+    ]);
+});
+
+test("it ignores whitespace tokens", () => {
+    const tokens = new Lexer("            \n\n    ", true).lex();
+    expect(tokens).toEqual([]);
+});
+
 
 test("all token types are covered by tests", () => {
     expect(testedTypes).toEqual(Object.keys(regexps));

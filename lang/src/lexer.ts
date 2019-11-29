@@ -3,8 +3,9 @@ type RegexpMap = { [key: string]: RegExp };
 export const regexps = {
     comment: /^(\/\/.*)|(\/\*(.|[\n])*\*\/)/,
     keyword: /^const/,
-    whitespace: /^\s+/,
-    identifier: /^\w+/
+    identifier: /^\w+/,
+    seperator: /^(\(|\)|{|})/,
+    whitespace: /^\s+/
 } as RegexpMap;
 
 export interface Token {
@@ -17,8 +18,10 @@ export default class Lexer {
     i: number = 0;
     debug: boolean = false;
     tokens: Token[] = [];
-    constructor(data: string) {
+    ignoreWhitespace: boolean;
+    constructor(data: string, ignoreWhitespace: boolean = false) {
         this.data = data;
+        this.ignoreWhitespace = ignoreWhitespace;
     }
     debugLog(...args: any) {
         if (this.debug) {
@@ -38,7 +41,9 @@ export default class Lexer {
                 if (!result) continue;
                 const match = result[0];
                 this.i += match.length - 1;
-                this.tokens.push({ type: k, match });
+                if (k !== "whitespace" || !this.ignoreWhitespace) {
+                    this.tokens.push({ type: k, match });
+                } 
                 lexed = true;
                 break;
             }
