@@ -43,7 +43,7 @@ export default class Lexer {
                 this.i += match.length - 1;
                 if (k !== "whitespace" || !this.ignoreWhitespace) {
                     this.tokens.push({ type: k, match });
-                } 
+                }
                 lexed = true;
                 break;
             }
