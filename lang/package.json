@@ -1,0 +1,19 @@
+{
+  "name": "lexer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "RONTheCookie <me@ronthecookie.me>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "@types/jest": "^24.0.23",
+    "@types/node": "^12.7.12",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.2.0",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.3"
+  },
+  "scripts": {
+    "start": "ts-node src",
+    "test": "jest"
+  }
+}
