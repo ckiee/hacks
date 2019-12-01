@@ -1,0 +1,14 @@
+{
+  "name": "aoc-2019",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "RONTheCookie <me@ronthecookie.me>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "@types/node": "^12.7.12",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.3"
+  },
+  "scripts": {
+  }
+}
