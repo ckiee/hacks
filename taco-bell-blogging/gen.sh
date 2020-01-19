@@ -14,6 +14,7 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# This was made because of http://widgetsandshit.com/teddziuba/2010/10/taco-bell-programming.html.
 mkdir -p {out,posts}
 cp style.css out
 ul=" "
