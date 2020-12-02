@@ -8,12 +8,13 @@ pub fn run() {
 fn part_1() {
     let input: Vec<i32> = RAW_INPUT
         .split_whitespace()
-        .map(|x| x.parse::<i32>().unwrap()).collect();
-	
+        .map(|x| x.parse::<i32>().unwrap())
+        .collect();
+
     for x in &input {
         for y in &input {
             if x + y == 2020 {
-                println!("Day 1.1 Answer: {}", x * y);
+                println!("Part 1: {}", x * y);
             }
         }
     }
@@ -22,13 +23,14 @@ fn part_1() {
 fn part_2() {
     let input: Vec<i32> = RAW_INPUT
         .split_whitespace()
-        .map(|x| x.parse::<i32>().unwrap()).collect();
-	
+        .map(|x| x.parse::<i32>().unwrap())
+        .collect();
+
     for x in &input {
         for y in &input {
             for z in &input {
                 if x + y + z == 2020 {
-                    println!("Day 1.2 Answer: {}", x * y * z);
+                    println!("Part 2: {}", x * y * z);
                 }
             }
         }
