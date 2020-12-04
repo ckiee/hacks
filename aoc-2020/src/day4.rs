@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use colored::*;
+// use colored::*;
 use regex::Regex;
 
 const RAW_INPUT: &str = include_str!("../inputs/day4");
@@ -63,6 +63,8 @@ fn part_2() {
     let passports = parse();
     let required_props = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
     let mut score = 0;
+    let pid_re = Regex::new(r"^[0-9]{9}$").unwrap();
+    let hcl_re = Regex::new(r"^#[a-f0-9]{6}$").unwrap();
 
     for passport in passports {
         // println!("{:?}", props);
@@ -78,22 +80,23 @@ fn part_2() {
             pid (Passport ID) - a nine-digit number, including leading zeroes.
             cid (Country ID) - ignored, missing or not.
         */
-        println!("pp={}", format!("{:?}", passport).blue());
+        // println!("pp={}", format!("{:?}", passport).blue());
+
         if required_props.iter().all(|x| {
             let val = passport.get(*x);
             let res = match *x {
                 "byr" if val.is_some() => {
-                    assert_eq!(val.unwrap().len(), 4); //seems to never happen
+                    // assert_eq!(val.unwrap().len(), 4); //seems to never happen
                     let parsed = val.unwrap().parse::<i32>().unwrap();
                     parsed >= 1920 && parsed <= 2002
                 }
                 "iyr" if val.is_some() => {
-                    assert_eq!(val.unwrap().len(), 4); //seems to never happen
+                    // assert_eq!(val.unwrap().len(), 4); //seems to never happen
                     let parsed = val.unwrap().parse::<i32>().unwrap();
                     parsed >= 2010 && parsed <= 2020
                 }
                 "eyr" if val.is_some() => {
-                    assert_eq!(val.unwrap().len(), 4); //seems to never happen
+                    // assert_eq!(val.unwrap().len(), 4); //seems to never happen
                     let parsed = val.unwrap().parse::<i32>().unwrap();
                     parsed >= 2020 && parsed <= 2030
                 }
@@ -112,10 +115,7 @@ fn part_2() {
                         false
                     }
                 }
-                "hcl" if val.is_some() => {
-					let re = Regex::new(r"#[a-f0-9]{6}").unwrap();
-                    re.find(val.unwrap()).is_some()
-                }
+                "hcl" if val.is_some() => hcl_re.find(val.unwrap()).is_some(),
                 "ecl" if val.is_some() => match &val.unwrap()[..] {
                     "amb" => true,
                     "blu" => true,
@@ -126,16 +126,13 @@ fn part_2() {
                     "oth" => true,
                     _ => false,
                 },
-                "pid" if val.is_some() => {
-                    let re = Regex::new(r"[0-9]{9}").unwrap();
-                    re.find(val.unwrap()).is_some()
-                }
+                "pid" if val.is_some() => pid_re.find(val.unwrap()).is_some(),
                 _ => {
                     // println!("{}","wtf".red());
                     false
                 }
             };
-            println!("{}={}", x, if res { "yes".green() } else { "no".red() });
+            // println!("{}={}", x, if res { "yes".green() } else { "no".red() });
             res
         }) {
             score += 1;
