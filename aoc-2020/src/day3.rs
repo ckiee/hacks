@@ -1,4 +1,4 @@
-use colored::*;
+// use colored::*;
 
 const RAW_INPUT: &str = include_str!("../inputs/day3");
 
@@ -32,25 +32,25 @@ fn part_2() {
     let res = slopes
         .iter()
         .map(|slope| solve_for_slope(*slope))
-		.fold(1, |acc, x| acc * x);
-	println!("Part 2: {}", res);
+        .fold(1, |acc, x| acc * x);
+    println!("Part 2: {}", res);
 }
 
 // this doesnt account for horiz offscreen
-fn visualize(data: &Vec<Vec<bool>>, highlight_pos: &(usize, usize)) {
-    for (i, line) in data.iter().enumerate() {
-        for (j, val) in line.iter().enumerate() {
-            print!(
-                "{}",
-                if highlight_pos.0 == i && highlight_pos.1 == j {
-                    "=".red()
-                } else if *val {
-                    "#".blue()
-                } else {
-                    ".".blue()
-                }
-            );
-        }
-        println!("");
-    }
-}
+// fn visualize(data: &Vec<Vec<bool>>, highlight_pos: &(usize, usize)) {
+//     for (i, line) in data.iter().enumerate() {
+//         for (j, val) in line.iter().enumerate() {
+//             print!(
+//                 "{}",
+//                 if highlight_pos.0 == i && highlight_pos.1 == j {
+//                     "=".red()
+//                 } else if *val {
+//                     "#".blue()
+//                 } else {
+//                     ".".blue()
+//                 }
+//             );
+//         }
+//         println!("");
+//     }
+// }
