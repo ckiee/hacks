@@ -1,4 +1,3 @@
-
 // use colored::*;
 const RAW_INPUT: &str = include_str!("../inputs/day5");
 #[derive(Debug)]
@@ -78,9 +77,9 @@ pub fn run() {
         if maybe_next.is_none() {
             break;
         }
-		let next = maybe_next.unwrap();
-		if *next != (x + 1) {
-			println!("our seat (pt2): {}", x +1);
-		}
+        let next = maybe_next.unwrap();
+        if *next != (x + 1) {
+            println!("our seat (pt2): {}", x + 1);
+        }
     }
 }
