@@ -57,7 +57,7 @@ fn part_1(data: &HashMap<String, Vec<Bags>>) {
         }
         score
     }
-    for (k, v) in data {
+    for (_k, v) in data {
         if recurse(&v, data) >= 1 {
             score += 1;
         }
