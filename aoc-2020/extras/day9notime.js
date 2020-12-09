@@ -998,39 +998,45 @@ const nums = `45
 58552053458866
 62642343072880
 60354832330196`
-    .split("\n")
-    .map((x) => parseInt(x, 10));
+	.split("\n")
+	.map(x => parseInt(x, 10));
 const preamble = 25;
 let part1 = 0;
 for (let i = preamble; i < nums.length; i++) {
-    const prembef = nums.filter((_x, j) => j >= i - preamble && j < i);
-    console.log(prembef);
-    let correct = false;
-    for (let j = 0; j < prembef.length; j++) {
-        for (let k = 0; k < prembef.length; k++) {
-            const y = prembef[j];
-            const z = prembef[k];
-            if (y + z == nums[i]) correct = true;
-        }
-    }
-    if (!correct) {
-        console.log("part 1:", nums[i]);
-        part1 = nums[i];
-        break;
-    }
+	const prembef = nums.filter((_x, j) => j >= i - preamble && j < i);
+	// console.log(prembef);
+	let correct = false;
+	for (let j = 0; j < prembef.length; j++) {
+		for (let k = 0; k < prembef.length; k++) {
+			const y = prembef[j];
+			const z = prembef[k];
+			if (y + z == nums[i]) correct = true;
+		}
+	}
+	if (!correct) {
+		console.log("part 1:", nums[i]);
+		part1 = nums[i];
+		break;
+	}
 }
 
-for (let i = 680; i < nums.length; i++) {
-    console.log("i", i);
-    for (let j = 1; j < nums.length; j++) {
-        // console.log("j", j);
+for (let i = 0; i < nums.length; i++) {
+	console.log("i:", i);
+	for (let j = 1; j < nums.length; j++) {
+		console.log("j:", j);
 
-        let partial = nums.filter((x, k) => k >= i && k < i + j);
-        console.log(partial);
-        if (partial.reduce((a, b) => a + b) == part1) {
-            const sorted = partial.sort((a, b) => a - b);
-            console.log("yes", sorted[0] + sorted[sorted.length - 1]);
-            while (true) {}
-        }
-    }
+		const partial = nums.filter((x, k) => k >= i && k < i + j);
+		const sum = partial.reduce((a, b) => a + b);
+		if (sum == part1 && partial.length !== 1) {
+			const sorted = partial.sort((a, b) => a - b);
+			console.log(partial, sum, sorted[0] + sorted[sorted.length - 1]);
+			console.log("ye!");
+			console.log("ye!");
+			console.log("ye!");
+			console.log("ye!");
+			console.log("ye!");
+
+			process.exit(0);
+		}
+	}
 }
