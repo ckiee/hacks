@@ -1021,9 +1021,9 @@ for (let i = preamble; i < nums.length; i++) {
 }
 
 for (let i = 0; i < nums.length; i++) {
-	console.log("i:", i);
+	// console.log("i:", i);
 	for (let j = 1; j < nums.length; j++) {
-		console.log("j:", j);
+		// console.log("j:", j);
 
 		const partial = nums.filter((x, k) => k >= i && k < i + j);
 		const sum = partial.reduce((a, b) => a + b);
