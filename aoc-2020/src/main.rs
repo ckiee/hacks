@@ -9,6 +9,7 @@ mod day6;
 mod day7;
 mod day8;
 mod day9;
+mod day10;
 
 fn main() {
     let day = env::args().nth(1).unwrap();
@@ -22,6 +23,7 @@ fn main() {
         "day7" => day7::run(),
         "day8" => day8::run(),
         "day9" => day9::run(),
+        "day10" => day10::run(),
 
         _ => {
             panic!("unknown day argument");
