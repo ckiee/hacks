@@ -24,8 +24,12 @@
     function setFocusOn(node, enable) {
         node.classList.toggle(scrollFocusClass, enable);
         node.scrollIntoView();
-        window.scrollByLines(-10);
-
+        // if we're focused on the first item, we probably also want to see the top of the page too (:
+        if (node.parentNode.children[0] == node) {
+            window.scrollTo(0, 0);
+        } else {
+            window.scrollByLines(-10);
+        }
     }
     const nodes = [...doc.querySelector(".comment-tree tbody").children];
     const storageKey = `hjkl-item-${new URLSearchParams(location.search).get("id")}`;
