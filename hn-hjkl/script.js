@@ -23,19 +23,23 @@
     doc.head.appendChild(styleEle);
     function setFocusOn(node, enable) {
         node.classList.toggle(scrollFocusClass, enable);
+        node.scrollIntoView();
+        window.scrollByLines(-10);
+
     }
     const nodes = [...doc.querySelector(".comment-tree tbody").children];
-    setFocusOn(nodes[0], true);
-    let currentIdx = 0;
+    const storageKey = `hjkl-item-${new URLSearchParams(location.search).get("id")}`;
+    let currentIdx = parseInt(localStorage[storageKey]);
+    setFocusOn(nodes[currentIdx], true);
     doc.addEventListener("keydown", e => {
+        const keymap = {KeyJ: x=>x+1, KeyK: x=>x-1, ArrowUp: x=>x-1, ArrowDown: x=>x+1, Home: x=>0, End: x=>nodes.length-1};
+        if (!Object.keys(keymap).includes(e.code)) return;
+        e.preventDefault();
         setFocusOn(nodes[currentIdx], false);
-        const incrmt = (e.key == "j" ? 1 : e.key == "k" ? -1 : 0);
-        if (incrmt == 0) return;
-        currentIdx += incrmt;
-        if (currentIdx == 0) currentIdx = nodes.length - 1;
+        currentIdx = keymap[e.code](currentIdx);
+        if (currentIdx < 0) currentIdx = nodes.length - 1;
         if (currentIdx >= nodes.length) currentIdx = 0;
         setFocusOn(nodes[currentIdx], true);
-        nodes[currentIdx].scrollIntoView();
-        window.scrollByLines(-10);
+        localStorage[storageKey] = currentIdx;
     });
 })();
