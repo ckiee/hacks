@@ -12,44 +12,60 @@
 (function() {
     'use strict';
     const doc = document;
+    const qs = (...args) => document.querySelector(...args);
+    const qsa = (...args) => document.querySelectorAll(...args);
+
+    //
     const styleEle = doc.createElement("style");
     styleEle.id = "hn-hjkl-scroll";
     const scrollFocusClass = "hjkl-scroll-focus";
     styleEle.innerHTML = `
-    .${scrollFocusClass} {
-        background: rgba(255,0,0,0.2);
-    }
-    `;
+        .${scrollFocusClass} {
+            background: rgba(255,0,0,0.2);
+        }
+        `;
     doc.head.appendChild(styleEle);
-    function setFocusOn(node, enable) {
+    //
+
+    function setFocusOn(node, enable, scroll = true) {
         node.classList.toggle(scrollFocusClass, enable);
-        node.scrollIntoView();
-        // if we're focused on the first item, we probably also want to see the top of the page too (:
-        if (node.parentNode.children[0] == node) {
-            window.scrollTo(0, 0);
-        } else {
-            window.scrollByLines(-10);
+        sessionStorage[storageKey] = currentIdx;
+        if (scroll) {
+            node.scrollIntoView({ block: "center", behavior: "smooth" });
         }
     }
-    // "item" is a thread with comments, "news" is the front page
-    const pageType = location.pathname.replace(/^\//, "");
-    const nodes = [...doc.querySelector(pageType == "item" ? ".comment-tree tbody" : ".itemlist tbody").children];
+
+    const isItemPage = location.pathname == "/item";
+    const nodes = isItemPage
+          ? [qs(".fatitem"), ...qs(".comment-tree tbody").children]
+          : [...qsa(".itemlist .athing")];
+
     const storageKey = `hjkl-url-${location.path + location.search}`;
-    let currentIdx = parseInt(localStorage[storageKey] || "0");
+    let currentIdx = parseInt(sessionStorage[storageKey] || "0");
+
     setFocusOn(nodes[currentIdx], true);
+
     doc.addEventListener("keydown", e => {
-        const keymap = {KeyJ: x=>x+1,
-                        KeyK: x=>x-1,
-                        ArrowUp: x=>x-1,
-                        ArrowDown: x=>x+1,
-                        Home: x=>0,
-                        End: x=>nodes.length-1,
-                        Enter: x => {
-                            const node = nodes[currentIdx];
-                            node.querySelector(".titlelink, .subtext a:last-child").click();
-                            return x;
-                        }
-                       };
+        const keymap = {
+            KeyJ: x => x + 1,
+            KeyK: x => x - 1,
+            ArrowUp: x => x - 1,
+            ArrowDown: x => x + 1,
+            Home: x => 0,
+            End: x => nodes.length - 1,
+            Enter: x => {
+                const node = nodes[currentIdx];
+                node.querySelector(".titlelink, .subtext a:last-child").click();
+                return x;
+            },
+            KeyC: x => {
+                const node = nodes[currentIdx];
+                const parentChildren = [...node.parentElement.children];
+                const nextNode = parentChildren[parentChildren.indexOf(node) + 1];
+                nextNode.children[nextNode.children.length - 1].click();
+                return x;
+            }
+        };
         if (!Object.keys(keymap).includes(e.code)) return;
         e.preventDefault();
         setFocusOn(nodes[currentIdx], false);
@@ -57,6 +73,15 @@
         if (currentIdx < 0) currentIdx = nodes.length - 1;
         if (currentIdx >= nodes.length) currentIdx = 0;
         setFocusOn(nodes[currentIdx], true);
-        localStorage[storageKey] = currentIdx;
     });
+
+    nodes.forEach((node, idx) => {
+        node.addEventListener("click", e => {
+            //no scroll since it's already visible
+            setFocusOn(nodes[currentIdx], false, false);
+            currentIdx = idx;
+            setFocusOn(nodes[idx], true, false);
+        });
+    });
+
 })();
