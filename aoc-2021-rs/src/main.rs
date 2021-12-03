@@ -1,9 +1,22 @@
+use std::time::Instant;
+
 mod day1;
 mod day2;
 mod day3;
 
-fn main() {
-    dbg!(day1::main());
-    dbg!(day2::main());
-    dbg!(day3::main());
+macro_rules! day_perf_measure {
+    ($($mod:path),+) => {
+        fn main() {
+            $(
+                {
+                    use $mod as base;
+                    let now = Instant::now();
+                    let result = base::main();
+                    println!("{} [{:?}]: {:?}", stringify!($mod), now.elapsed(), result);
+                }
+            )*
+        }
+    }
 }
+
+day_perf_measure!(day1, day2, day3);

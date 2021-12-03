@@ -19,6 +19,7 @@ fn solve_1(data: Vec<u32>) -> u32 {
 fn solve_2(data: Vec<u32>) -> u32 {
     rolling_common_filter(data.clone(), false) * rolling_common_filter(data.clone(), true)
 }
+
 fn rolling_common_filter(data: Vec<u32>, invert: bool) -> u32 {
     let mut common_nums = data.clone();
     for pos in 0..MAX_POS {
