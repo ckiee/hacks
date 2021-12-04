@@ -3,6 +3,7 @@ use std::time::Instant;
 mod day1;
 mod day2;
 mod day3;
+mod day4;
 
 macro_rules! day_perf_measure {
     ($($mod:path),+) => {
@@ -19,4 +20,4 @@ macro_rules! day_perf_measure {
     }
 }
 
-day_perf_measure!(day1, day2, day3);
+day_perf_measure!(day1, day2, day3, day4);
