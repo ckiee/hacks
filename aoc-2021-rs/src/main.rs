@@ -6,6 +6,7 @@ mod day3;
 mod day4;
 mod day5;
 mod day6;
+mod day7;
 
 macro_rules! day_perf_measure {
     ($($mod:path),+) => {
@@ -22,4 +23,4 @@ macro_rules! day_perf_measure {
     }
 }
 
-day_perf_measure!(day1, day2, day3, day4, day5, day6);
+day_perf_measure!(day1, day2, day3, day4, day5, day6, day7);
