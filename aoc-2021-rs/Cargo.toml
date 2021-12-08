@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 cli-table = "0.4.6"
+itertools = "0.10.3"
