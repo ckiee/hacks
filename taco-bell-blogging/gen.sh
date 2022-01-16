@@ -1,6 +1,6 @@
 #!/bin/bash
 #    taco-bell-blogging
-#    Copyright (C) 2020 Ron B
+#    Copyright (C) 2020 ckie
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
