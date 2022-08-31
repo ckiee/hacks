@@ -1,0 +1,12 @@
+#+TITLE: tests
+* line
+** bottom left to top right
+[[file:~/git/hacks/renderpls/target/mtest/bottomleft_to_topright.png]]
+** tl to br
+[[file:~/git/hacks/renderpls/target/mtest/tl_to_br.png]]
+** tl to br sharp slope
+not supposed to get cut off!
+currently does that when the first error compensation shift is needed
+[[file:~/git/hacks/renderpls/target/mtest/tl_to_br_sharp_slope.png]]
+* tri
+[[file:~/git/hacks/renderpls/target/mtest/simple_tri.png]]
