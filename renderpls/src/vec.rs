@@ -32,7 +32,6 @@ impl Mul for Vec2 {
     }
 }
 
-
 impl Vec2 {
     /// Swaps between X and Y in the Vec.
     pub fn swap(self) -> Self {
