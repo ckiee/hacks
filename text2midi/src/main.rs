@@ -85,7 +85,7 @@ fn main() -> Result<()> {
                     note_on(
                         om,
                         (digit + 50) as u8,
-                        /*TODO: (expo * (50 / 4))*/ 127 as u8,
+                        /*TODO: (expo * (50 / 4))*/ (word.len()*10).clamp(50, 100) as u8,
                     );
                     expo += 1;
                 }
