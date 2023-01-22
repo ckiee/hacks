@@ -3,7 +3,8 @@ use std::f32::consts::{PI, TAU};
 use anyhow::Result;
 use bmp::{
     consts::{
-        BLUE, BLUE_VIOLET, CORAL, DARK_RED, GREEN, LIME, PALE_TURQUOISE, PINK, PURPLE, RED, YELLOW,
+        BLUE, BLUE_VIOLET, CORAL, DARK_GREEN, DARK_RED, DARK_VIOLET, GREEN, GREY, LIME,
+        PALE_TURQUOISE, PINK, PURPLE, RED, YELLOW,
     },
     Image, Pixel,
 };
@@ -16,22 +17,23 @@ pub fn scene(im: &mut Image) {
     // line(im, Vec2(0, 0), Vec2(640-1, 480-1), |_| RED);
     // tri(im, 200, 0.5, Vec2(320, 240), |_| YELLOW);
 
+    ascii_ch(im, Vec2(100, 20), 'H', |_| CORAL);
+    // ascii_ch(im, Vec2(100, 50), 'I', |_| CORAL);
+    // ascii_ch(im, Vec2(100, 60), '!', |_| CORAL);
     straight_line(im, Vec2(0, 240), Vec2(640 - 1, 240), |_| BLUE);
     straight_line(im, Vec2(320, 0), Vec2(320, 480 - 1), |_| BLUE);
-    let count = 10000;
+    let count = 50;
     // good: 0,2,3,5,10
     // good-except-abs(bpn)==1: 2,7,8
     // bad: 1,4,6,9
     for i in 0..=count {
-        eprintln!("{i}");
-        let a = ((TAU / (count as f32)) * (i as f32)) - PI;
+        let a = (TAU / (count as f32)) * (i as f32);
+        let offset = Vec2((a.cos() * 100.0) as i64, (a.sin() * 100.0) as i64);
+        eprintln!("{i} {{a={a}}}, off=[{} | {}]}}", offset.0, offset.1);
         let base = Vec2(320, 240);
-        line(
-            im,
-            base,
-            base + Vec2((a.cos() * 100.0) as i64, (a.sin() * 100.0) as i64),
-            |_| RED,
-        );
+        line(im, base, base + offset, |_| RED);
+
+        im.save(format!("target/test-{i:06}.bmp")).unwrap();
     }
 
     // let quart = 0.26f32;
@@ -57,6 +59,7 @@ pub fn rect(im: &mut Image, from: Vec2, to: Vec2, painter: Painter2) {
         }
     }
 }
+
 pub fn centered_square(im: &mut Image, origin: Vec2, radius: Vec1, painter: Painter2) {
     let extended = Vec2(radius, radius);
     rect(im, origin - extended, origin + extended, painter);
@@ -99,15 +102,58 @@ pub fn xy_uncombined_line(im: &mut Image, from: Vec2, to: Vec2, _painter: Painte
     straight_line(im, Vec2(to.0, to.1), Vec2(from.0, to.1), |_| GREEN);
 }
 
-pub fn line(im: &mut Image, ofrom: Vec2, oto: Vec2, painter: Painter2) {
-    let (from, to) = if ofrom.0 < oto.0 && ofrom.1 < oto.1 {
-        (ofrom, oto)
-    } else {
-        (oto, ofrom)
-    };
+/// [`origin`] is top left, as is standard for this library.
+// TODO: ugh so it seems the font isn't encoded as I thought it'd be
+// I was trying [8*ch + 8*y+yi] then poking at the bitfield (8x8 font, x8 is in a byte)
+// thinking that each byte would be a row of pixels
+// (I converted it to that since it was a boolean array before which wastes 7 bits for each element)
+//
+// but it seems it's the other way around and was just incidentally sorta-working. i think.
+// anyway, enough programmy for now
+pub fn ascii_ch(im: &mut Image, origin: Vec2, ch: char, painter: Painter2) {
+    assert!(ch.is_ascii());
+    let uch = ch as u8;
+    let font = include_bytes!("./8x8.bin");
+    // for y in 0..8 {
+    //     let byte = font[(8 * uch + y) as usize];
+    //     for x in 0..8 {
+    //         let at = Vec2(x as i64, y as i64);
+    //         if (byte & (1 << x)) != 0 {
+    //             dot(im, origin + at, painter(origin + at));
+    //         }
+    //     }
+    // }
 
+    for y in 0..(470 / 13) {
+        for x in 0..(600 / 12) {
+            let begin = Vec2((x * 12) as i64, (y * 13) as i64);
+            // rect(
+            //     im,
+            //     begin,
+            //     begin + Vec2(8, 8),
+            //     if x % 2 == 0 && y % 2 == 0 {
+            //         |_| DARK_VIOLET
+            //     } else {
+            //         |_| DARK_GREEN
+            //     },
+            // );
+
+            for yi in 0..8 {
+                let byte = font[((8*65) + yi).min(font.len()-1) as usize];
+                for bi in 0..8 {
+                    let at = begin + Vec2(yi as i64, bi as i64);
+                    if (byte & (1 << bi)) != 0 {
+                        dot(im, at, painter(at));
+                    }
+                }
+            }
+        }
+    }
+}
+
+pub fn line(im: &mut Image, from: Vec2, to: Vec2, painter: Painter2) {
     // Most, least significant. b{from,to} relative to that space.
-    let (dm, dl, bfrom, bto, retrans) = {
+    let (bdx, bdy, bfrom, bto, retrans) = {
         let dx = to.0 - from.0;
         let dy = to.1 - from.1;
         if dx.abs() > dy.abs() {
@@ -117,71 +163,23 @@ pub fn line(im: &mut Image, ofrom: Vec2, oto: Vec2, painter: Painter2) {
         }
     };
 
-    let mut bpos = bfrom;
-    dbg!(bpos, dm, dl);
+    let retransf = match retrans {
+        false => |vec: Vec2| vec,
+        true => |vec: Vec2| vec.swap(),
+    };
+    let bdot = |im: &mut Image, at: Vec2, to: Pixel| dot(im, retransf(at), to);
 
+    let mut pos = bfrom;
     {
-        let pos = if retrans { bpos.swap() } else { bpos };
-        dot(im, pos, LIME);
-        dot(im, to, LIME);
+        bdot(im, pos, YELLOW);
+        bdot(im, bto, LIME);
     }
 
     // we increment dl every pm%(dm/dl)==0. more complicated because lhs is usually non-int
-    let ex_every = (dm.checked_div(dl).unwrap_or(0)) as i64;
-    let mod_corrections = {
-        let mut v = vec![];
-        match dm.checked_rem(dl).map(|i| i as f32) {
-            Some(mut work) => {
-                for _ in 0..30 {
-                    work = work.sqrt();
-                    if !(work == 0.0 || work.is_nan()) {
-                        let every = ((dm as f32) / work) as i64;
-                        dbg!(work, dm, every);
-                        // Eventually we converge on a result, stop generating when that
-                        // happens. TODO: This is because divisor==1 (since work < 1.5)
-                        match v.last() {
-                            Some(last) if *last == every => {
-                                break;
-                            }
-                            _ => {}
-                        };
-                        v.push(every);
-                    }
-                }
-            }
-            None => {}
-        }
-        v
-    };
-    dbg!(ex_every, &mod_corrections);
-
-    let mut bpn = 0i64;
-    for m in 0..dm.abs() {
-        bpos.0 += dm.signum();
-        let pos = if retrans { bpos.swap() } else { bpos };
-        // dbg!(bpos, dm, dl, ex_every, ey_every);
-        if dl != 0 {
-            if m % ex_every == 0 {
-                bpos.1 += dl.signum();
-                if bpn != 0 {
-                    bpos.1 += bpn.signum();
-                    bpn -= bpn.signum();
-                }
-                dot(im, Vec2(pos.0, to.1 + 10), BLUE_VIOLET);
-            }
-        }
-        for (ic, corr) in mod_corrections.iter().enumerate() {
-            if m % corr == 0 {
-                bpn -= dl.signum();
-                dot(
-                    im,
-                    Vec2(pos.0, to.1 + 11),
-                    [YELLOW, PURPLE, PINK, CORAL, PALE_TURQUOISE, DARK_RED][ic % 6],
-                );
-            }
-        }
-
-        dot(im, pos, painter(pos));
+    let ndx = (bdx.checked_div(bdy).unwrap_or(0)) as i64;
+    dbg!(ndx);
+    for m in 0..bdx.abs() {
+        // pos.0 += dm.signum();
+        bdot(im, pos, painter(pos));
     }
-    eprintln!("bpn should be 0 if pixel hit: {bpn}");
 }
