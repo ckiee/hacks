@@ -25,7 +25,10 @@
     };
     const el = await $(".AlbumTracklist__Container-sc-123giuo-0");
     const sb = await $(".RightSidebar__Container-pajcl2-0");
+    el.parentNode.style.position = "relative";
+    el.style.position = "absolute";
     sb.insertBefore(el, sb.firstChild);
+    (await $(".LyricsSidebarAd__Recommendations-sc-1duvwla-1")).style.display = "none";
 
     //return; // so extra
     let innrv = 0;

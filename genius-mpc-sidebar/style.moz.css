@@ -1,0 +1,28 @@
+@-moz-document domain("genius.com") {
+#sticky-nav {
+    position: revert !important;
+}
+
+.AlbumTracklist__Container-sc-123giuo-0 {
+    column-count: revert;
+    font-size: 1.1em;
+    background: #111e;
+    border-radius: 2%;
+    border: 1px solid black;
+    padding: 2px;
+    > div {
+        flex: 0 1;
+    }
+    & div {
+        color: white;
+    }
+    & li > div {
+        > a { flex: 1 1 0; }
+    }
+}
+
+.AppleMusicPlayerdesktop__Iframe-sc-13x6a26-3,
+.SongHeaderdesktop__PyongWrapper-sc-1effuo1-12 {
+    display: none;
+}
+}
