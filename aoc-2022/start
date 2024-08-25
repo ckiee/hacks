@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+day=$(date +%d)
+for prt in 1 2; do
+    mkdir -p s/$day
+    path=s/"$day/$prt".js
+    [ -e $path ] || cat >s/"$day/$prt".js <<EOF
+const _ = require("lodash");
+const fs = require("fs");
+const pr = console.log;
+const file = fs.readFileSync("input.txt", {encoding: "utf-8"}).toString();
+const lines = file.split("\n");
+
+pr(
+    lines
+)
+
+EOF
+done
+cd s/"$day" || exit
+curl "https://adventofcode.com/2022/day/$(( $day ))/input" \
+    -H "User-Agent: github:ckiee/hacks (potentially uncommitted, contact git-525ff67@ckie.dev)" \
+    -H "Cookie: session=$(cat ../../.aoc-session)" \
+    -L --output input.txt -v
+clear
+(emacsclient --eval '(and (find-file "2.js") (goto-line 8))' &>/dev/null) & # SPC f S 1.js UP RET after pt1 done
+../../node_modules/.bin/nodemon -w . -e js,cjs,txt,csv --exec "node 2.js"

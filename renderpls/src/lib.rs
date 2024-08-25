@@ -13,6 +13,8 @@ use vec::{Painter2, Vec1, Vec2};
 pub mod vec;
 
 pub fn scene(im: &mut Image) {
+    mandelbrot_naive(im);
+    return;
     // line(im, Vec2(0, 480 - 1), Vec2(640, 0), |_| RED); // bottom left -> top right
     // line(im, Vec2(0, 0), Vec2(640-1, 480-1), |_| RED);
     // tri(im, 200, 0.5, Vec2(320, 240), |_| YELLOW);
@@ -50,6 +52,29 @@ pub fn dot(im: &mut Image, at: Vec2, to: Pixel) {
     assert!(at.0 >= 0 && at.0 < im.get_width().into());
     assert!(at.1 >= 0 && at.1 < im.get_height().into());
     im.set_pixel(at.0.try_into().unwrap(), at.1.try_into().unwrap(), to);
+}
+
+// https://en.wikipedia.org/wiki/Plotting_algorithms_for_the_Mandelbrot_set#Unoptimized_na%C3%AFve_escape_time_algorithm
+pub fn mandelbrot_naive(im: &mut Image) {
+    for pxr in 0..640 {
+        for pyr in 0..480 {
+            let px = ((pxr as f64) / 640.) * 2.47 - 1.53;
+            let py = (pyr as f64) / 480. * 2.24 - 1.12;
+
+            let mut wx = 0.;
+            let mut wy = 0.;
+            let mut i = 0u16;
+            while i < 1000 && (wx * wx + wy * wy) < 4. {
+                let nx = wx * wx - wy * wy + px;
+                wy = 2. * wx * wy + py;
+                wx = nx;
+                // eprintln!("({pxr},{pyr})\t\t\t{i}:({wx},{wy})");
+                i += 1;
+            }
+            let fi = ((i as f64) / 1000. * 255.) as u8;
+            dot(im, Vec2(pxr, pyr), Pixel::new(if i>100 { 255 }else{0},fi,fi))
+        }
+    }
 }
 
 pub fn rect(im: &mut Image, from: Vec2, to: Vec2, painter: Painter2) {
@@ -139,7 +164,7 @@ pub fn ascii_ch(im: &mut Image, origin: Vec2, ch: char, painter: Painter2) {
             // );
 
             for yi in 0..8 {
-                let byte = font[((8*65) + yi).min(font.len()-1) as usize];
+                let byte = font[((8 * 65) + yi).min(font.len() - 1) as usize];
                 for bi in 0..8 {
                     let at = begin + Vec2(yi as i64, bi as i64);
                     if (byte & (1 << bi)) != 0 {
