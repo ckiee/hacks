@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const $ = document.querySelector.bind(document);
     const $$ = (...r) => [...document.querySelectorAll(r)];
 
-    if (location.pathname.match(/^\/(history|unread)$/)) {
+    if (location.pathname.match(/^\/(history|unread|feed\/\d+\/entries\/\w+)$/)) {
         const ZOOM = 1.25;
         const USE_EXT = true;
 
