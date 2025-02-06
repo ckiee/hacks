@@ -1,3 +1,5 @@
+// minifluxkl by ckie https://pupc.at/mf
+// https://github.com/ckiee/hacks/tree/master/minifluxkl/index.js
 document.addEventListener("DOMContentLoaded", () => {
     const $ = document.querySelector.bind(document);
     const $$ = (...r) => [...document.querySelectorAll(r)];
