@@ -1,0 +1,22 @@
+{
+  "name": "feed2epub",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dist": "bun build --target=bun --outfile dist/index.js ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.1",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "commander": "^14.0.0",
+    "dompurify": "^3.2.6",
+    "epub-gen": "^0.1.0",
+    "jsdom": "^26.1.0",
+    "xml2js": "^0.6.2"
+  }
+}
